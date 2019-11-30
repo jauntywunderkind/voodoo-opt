@@ -1,6 +1,6 @@
 "use module"
 import { sessionBus, systemBus} from "dbus-native"
-import { session as isSession} from "./args.js
+import { isSession} from "./args.js"
 
 export function bus(){
 	try{
@@ -8,8 +8,12 @@ export function bus(){
 			return sessionBus()
 		}
 		throw new Error()
-	}catch(){
+	}catch( ex){
 		return systemBus()
 	}
 }
 export default bus
+
+//export async function end( b= bus()){
+//	bus().connection.end()
+//}
