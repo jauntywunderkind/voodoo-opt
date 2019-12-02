@@ -1,7 +1,7 @@
 {
-	"name": "mffwd",
+	"name": "dbus-starter",
 	"version": "1.0.0",
-	"description": "",
+	"description": "a small library to accelerate dbus-native development",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
@@ -16,5 +16,9 @@
 	"module": "mffwd.js",
 	"esm": true,
 	"dependencies": {
+		"dbus-native": "^0.4.0"
+	},
+	"devDependencies": {
+		"esm": "^3.2.25"
 	}
 }

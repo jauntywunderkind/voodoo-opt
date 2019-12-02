@@ -1,7 +1,7 @@
 "use module"
 import minimist from "minimist"
 
-const argv= minimist( process.argv.slice( 2))
+export const argv= minimist( process.argv.slice( 2))
 
 export function isSession( a= argv){
 	return a.session || a.s
