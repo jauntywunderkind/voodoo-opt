@@ -1,15 +1,23 @@
 "use module"
 import minimist from "minimist"
 
-export const argv= minimist( process.argv.slice( 2))
+function makeModule( a= process.argv, e= process.env){
+	
+	
+}
 
-export function isSession( a= argv){
+export let argv()= minimist( process.argv.slice( 2))
+export function setArgv( a){
+	argv= a
+}
+export let env()= process.env
+export function setEnv( e){
+	env= e
+}
+
+export function isSession( a= argv()){
 	return a.session || a.s
 }
-export function isSystem( a= argv){
+export function isSystem( a= argv()){
 	return !isSession( a)
-}
-
-export function names( a= argv){
-	return a[ '_']|| [ "org.mpris.MediaPlayer2.*"]
 }
