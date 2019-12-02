@@ -1,23 +1,57 @@
 "use module"
 import minimist from "minimist"
 
-function makeModule( a= process.argv, e= process.env){
-	
-	
+function args_( argv= this&& this.process.argv|| process.argv){
+	return minimist( argv.splice( 2))
+}
+function env_( env= this&& this.process.env|| process.env){
+	return env
+}
+function process_(){
+	return process
 }
 
-export let argv()= minimist( process.argv.slice( 2))
-export function setArgv( a){
-	argv= a
-}
-export let env()= process.env
-export function setEnv( e){
-	env= e
-}
-
-export function isSession( a= argv()){
+function isSession( a= argv()){
 	return a.session || a.s
 }
-export function isSystem( a= argv()){
+function isSystem( a= argv()){
 	return !isSession( a)
 }
+
+function boundClone( o){
+	const clone= {}
+	for( let i in o){
+		let fn= o[ i]
+		if( fn instanceof Function){
+			clone[ i]= fn.bind( o)
+		}else{
+			// not actually a fn, just copy
+			clone[ i]= fn
+		}
+	}
+	return clone
+}
+
+export function makeModule( opts= {}){
+	let
+	  process= opts.process|| process_
+	  args= opts.args|| args_,
+	  env= opts.args|| env_,
+	  module= {
+		arg,
+		env,
+		process,
+		isSession,
+		isSystem
+	  }
+	return boundClone( module)
+}
+
+const singleton= makeModule()
+
+export let
+  arg= singleton.arg,
+  env= singleton.env,
+  isSession= singleton.isSession,
+  isSystem= singleton.isSystem,
+  process= singleton.process,
