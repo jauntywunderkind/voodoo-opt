@@ -1,5 +1,5 @@
 "use module"
-import { bus as Bus} from "./bus.js"
+import { bus as Bus} from "./config.js"
 
 export function Interface( bus= Bus(), name, path, iface){
 	let o= new Promise( function( resolve, reject){
