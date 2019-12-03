@@ -21,8 +21,8 @@ export const defaults= {
 	bus( isSession= this&& this!== globalThis? this.isSession(): isSession()){
 		return isSession? sessionBus(): systemBus()
 	},
-	busName( env= this&& this!== globalThis? this.env(): env()){
-		return env.DBUS_NAME
+	busNames( env= this&& this!== globalThis? this.env(): env()){ // it'd be nice to make this programmable but without functions.callee no way
+		return [ env.DBUS_NAME]
 	},
 	stdout( process= this&& this!== globalThis? this.process().stdout: globalThis.process.stdout){
 		return process

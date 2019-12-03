@@ -14,23 +14,42 @@ export async function listNames( opts= {}){
 	return Call( iface, "ListNames")
 }
 
-export async function filterNames( filter= opts&& opts.busName&& opts.busName(), opts= {}){
-	if( typeof( filter)=== "string"){
-		filter= new RegExp( filter)
+export async function filterNames( opts= {}){
+	// find names we are looking for
+	let busNames= opts&& opts.busNames()
+	if( !busNames){
+		throw new Error( "No bus-names specified to search for")
 	}
-	if( !filter){
-		throw new Error( "No filter specified")
+	// arrayitize
+	if( typeof busNames=== "string"|| busNames instanceof RegExp|| busNames instanceof Function){
+		busNames= [ busNames]
 	}
+	// up-vert strings to regexps
+	busNames= busNames.map( name=> typeof(name)=== "string"? new RegExp( name): name)
+	//  build a matcher function to test if a name is a busName
+	function matchBusName( name){
+		for( const test of busNames){
+			if( test.match( name)){
+				return true
+			}
+		}
+		return false
+	}
+	// get the names
 	const names= await opts.names|| await listNames( opts)
-	return names.filter( name=> filter.match( name))[ 0]
+	// check the names
+	return names.filter( matchBusName)
 }
 
-export async function main( opts){
+export async function main( opts, stdout= ){
 	const
-		args= makeConfig( opts),
-		names= await listNames( )
+		config= makeConfig( opts),
+		names= await listNames( config),
+		proc= config.process()
 	if( proc&& proc.stdout){
-		proc.stdout.write( names.join( "\n"))
+		for( let name of names){
+			proc.stdout.write( name, "\n")
+		}
 	}
 	return names
 }
