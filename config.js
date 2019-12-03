@@ -49,8 +49,8 @@ export function makeConfig( opts= {}){
 	return boundClone( config)
 }
 
-const singleton= makeConfig()
 export const
+	singleton= makeConfig(),
 	process= singleton.process,
 	args= singleton.args,
 	env= singleton.env,
