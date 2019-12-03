@@ -10,9 +10,6 @@ const process_= (function(){
 		return process__
 	}
 })()
-export {
-	process_ as process
-}
 
 function args( argv= this&& this.process().argv|| process.argv){
 	return minimist( argv.splice( 2))
@@ -30,7 +27,7 @@ function isSystem( args= this&& this.args()|| args()){
 }
 
 function bus( isSession= this&& this.isSession? this.isSession(): isSession()){
-	return sessionBus(): systemBus()
+	return isSession? sessionBus(): systemBus()
 }
 
 function boundClone( o){
@@ -47,28 +44,31 @@ function boundClone( o){
 	return clone
 }
 
-export function makeModule( opts= {}){
-	let
-	  process= opts.process|| process_
-	  args= opts.args|| args,
-	  env= opts.args|| env,
-	  module= {
-		arg,
-		env,
-		process,
-		isSession,
-		isSystem,
-		bus,
-	  }
-	return boundClone( module)
+export function makeConfig( opts= {}){
+	let config= {
+		process: opts.process|| process,
+		args: opts.args|| args,
+		env: opts.env|| env,
+		isSession: opts.isSession|| isSession,
+		isSystem: opts.isSystem|| isSystem,
+		bus: opts.bus|| bus
+	}
+	return boundClone( config)
 }
 
-const singleton= makeModule()
-export const
-  process= singleton.process,
-  arg= singleton.arg,
-  env= singleton.env,
-  isSession= singleton.isSession,
-  isSystem= singleton.isSystem,
-  bus= singleton.bus
-
+const
+	singleton= makeConfig(),
+	_p= singleton.process,
+	_a= singleton.args,
+	_e= singleton.env,
+	_iSe= singleton.isSession,
+	_iSy= singleton.isSystem,
+	_bus= singleton.bus
+export {
+	_p as process,
+	_a as args,
+	_e as env,
+	_iSe as isSession,
+	_iSy as isSystem,
+	_bus as bus
+}
