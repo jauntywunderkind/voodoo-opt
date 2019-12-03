@@ -24,21 +24,21 @@ export async function filterNames( opts= {}){
 	if( typeof busNames=== "string"|| busNames instanceof RegExp|| busNames instanceof Function){
 		busNames= [ busNames]
 	}
-	// up-vert strings to regexps
-	busNames= busNames.map( name=> typeof(name)=== "string"? new RegExp( name): name)
-	//  build a matcher function to test if a name is a busName
-	function matchBusName( name){
-		for( const test of busNames){
-			if( test.match( name)){
-				return true
-			}
-		}
-		return false
-	}
 	// get the names
 	const names= await opts.names|| await listNames( opts)
-	// check the names
-	return names.filter( matchBusName)
+	for( let seeking of busNames){
+		if( typeof( seeking)=== "string"){
+			seeking= new RegExp( target)
+		}
+		if( seeking instanceof RegExp){
+			const seeking_= seeking
+			seeking= name=> seeking_.match( name)
+		}
+		const results= names.filter( seeking)
+		if( results.length){
+			return results
+		}
+	}
 }
 
 export async function main( opts){

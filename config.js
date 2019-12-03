@@ -59,7 +59,8 @@ function boundClone( o){
 	return clone
 }
 
-export function makeConfig( opts= {}){
+const defaults_= defaults
+export function makeConfig( opts= {}, defaults= defaults_){
 	const config= Object.assign( {}, defaults, opts)
 	return boundClone( config)
 }
@@ -71,4 +72,8 @@ export const
 	env= singleton.env,
 	isSession= singleton.isSession,
 	isSystem= singleton.isSystem,
-	bus= singleton.bus
+	defaultBus= singleton.defaultBus,
+	bus= singleton.bus,
+	busNames= singleton.busNames,
+	stdout= singleton.stdout
+export default singleton
