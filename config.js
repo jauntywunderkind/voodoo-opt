@@ -2,32 +2,25 @@
 import { sessionBus, systemBus} from "dbus-native"
 import minimist from "minimist"
 
-// bunch of jiggery so we can export define and "process" while still accessing the global process
-const process__= typeof( process)!== "undefined"? process: {}
-// iife so we can have a "process" function that doesn't clash with builtin
-const process_= (function(){
-	return function process(){
-		return process__
+export const defaults= {
+	process(){
+		return globalThis.process
+	},
+	args( argv= this&& this.process().argv|| process.argv){
+		return minimist( argv.splice( 2))
+	},
+	env( env= this&& this.process().env|| process.env){
+		return env
+	},
+	isSession_( args= this&& this.args()|| args()){
+		return args.session|| args.s
+	},
+	isSystem( args= this&& this.args()|| args()){
+		return !( args.session|| args.s)
+	},
+	bus( isSession= this&& this.isSession? this.isSession(): isSession()){
+		return isSession? sessionBus(): systemBus()
 	}
-})()
-
-function args( argv= this&& this.process().argv|| process.argv){
-	return minimist( argv.splice( 2))
-}
-function env( env= this&& this.process().env|| process.env){
-	return env
-}
-
-function isSession( args= this&& this.args()|| args()){
-	return args.session|| args.s
-}
-function isSystem( args= this&& this.args()|| args()){
-	return !( args.session|| args.s)
-
-}
-
-function bus( isSession= this&& this.isSession? this.isSession(): isSession()){
-	return isSession? sessionBus(): systemBus()
 }
 
 function boundClone( o){
@@ -46,29 +39,21 @@ function boundClone( o){
 
 export function makeConfig( opts= {}){
 	let config= {
-		process: opts.process|| process,
-		args: opts.args|| args,
-		env: opts.env|| env,
-		isSession: opts.isSession|| isSession,
-		isSystem: opts.isSystem|| isSystem,
-		bus: opts.bus|| bus
+		process: opts.process|| defaults.process,
+		args: opts.args|| defaults.args,
+		env: opts.env|| defaults.env,
+		isSession: opts.isSession|| defaults.isSession,
+		isSystem: opts.isSystem|| defaults.isSystem,
+		bus: opts.bus|| defaults.bus
 	}
 	return boundClone( config)
 }
 
-const
-	singleton= makeConfig(),
-	_p= singleton.process,
-	_a= singleton.args,
-	_e= singleton.env,
-	_iSe= singleton.isSession,
-	_iSy= singleton.isSystem,
-	_bus= singleton.bus
-export {
-	_p as process,
-	_a as args,
-	_e as env,
-	_iSe as isSession,
-	_iSy as isSystem,
-	_bus as bus
-}
+const singleton= makeConfig()
+export const
+	process= singleton.process,
+	args= singleton.args,
+	env= singleton.env,
+	isSession= singleton.isSession,
+	isSystem= singleton.isSystem,
+	bus= singleton.bus
