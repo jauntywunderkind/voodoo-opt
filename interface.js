@@ -1,7 +1,10 @@
 "use module"
 import { bus as Bus} from "./config.js"
 
-export function Interface( bus= Bus(), name, path, iface){
+export function Interface( busOrOpt= Bus(), name, path, iface){
+	if( busOrOpt.bus){
+		busOrOpt= busOrOpt.bus()
+	}
 	let o= new Promise( function( resolve, reject){
 		function accept( err, dbus){
 			if( err){
@@ -10,7 +13,7 @@ export function Interface( bus= Bus(), name, path, iface){
 				resolve( dbus)
 			}
 		}
-		bus
+		busOrOpt
 		  .getService( name)
 		  .getInterface( path, iface, accept)
 	})

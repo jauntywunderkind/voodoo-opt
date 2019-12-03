@@ -1,5 +1,5 @@
 "use module"
-import { process, bus as Bus} from "./config.js"
+import { makeConfig} from "./config.js"
 import Interface from "./interface.js"
 import Call from "./call.js"
 
@@ -7,7 +7,7 @@ export async function listNames( opts= {}){
 	const
 	  bus= (opts.bus|| Bus)( opts),
 	  iface= Interface(
-		opts.bus,
+		opts,
 		"org.freedesktop.DBus",
 		"/org/freedesktop/DBus",
 		"org.freedesktop.DBus")
@@ -41,14 +41,16 @@ export async function filterNames( opts= {}){
 	return names.filter( matchBusName)
 }
 
-export async function main( opts, stdout= ){
+export async function main( opts){
+	const config= makeConfig( opts)
+	config.warn()
 	const
-		config= makeConfig( opts),
-		names= await listNames( config),
-		proc= config.process()
-	if( proc&& proc.stdout){
+		stdout= config.stdout(),
+		names= await listNames( config)
+	if( stdout){
 		for( let name of names){
-			proc.stdout.write( name, "\n")
+			stdout.write( name)
+			stdout.write( "\n")
 		}
 	}
 	return names

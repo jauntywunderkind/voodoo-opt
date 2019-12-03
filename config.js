@@ -2,6 +2,8 @@
 import { sessionBus, systemBus} from "dbus-native"
 import minimist from "minimist"
 
+let warn= false
+
 export const defaults= {
 	process( global= this&& this!== globalThis&& this.globalThis? this.globalThis(): globalThis){
 		return global.process
@@ -12,12 +14,19 @@ export const defaults= {
 	env( env= this&& this!== globalThis? this.process().env: globalThis.process.env){
 		return env
 	},
-	isSession_( args= this&& this!== globalThis? this.args(): args()){
-		return args.session|| args.s
+	isSession( args= this&& this!== globalThis? this.args(): args(), defaultBus= this&& this.defaultBus|| defaults.defaultBus){
+		if( args.system){
+			return false
+		}
+		return args.session|| defaultBus=== "session"
 	},
-	isSystem( args= this&& this!== globalThis? this.args(): args()){
-		return !( args.session|| args.s)
+	isSystem( args= this&& this!== globalThis? this.args(): args(), defaultBus= this&& this.defaultBus|| defaults.defaultBus){
+		if( args.system){
+			return true
+		}
+		return !args.session|| defaultBus=== "system"
 	},
+	defaultBus: "session",
 	bus( isSession= this&& this!== globalThis? this.isSession(): isSession()){
 		return isSession? sessionBus(): systemBus()
 	},
@@ -26,6 +35,13 @@ export const defaults= {
 	},
 	stdout( process= this&& this!== globalThis? this.process().stdout: globalThis.process.stdout){
 		return process
+	},
+	warn( process= this&& this!== globalThis? this.process(): globalThis.process){
+		if( !warn){
+			warn= true
+			process.on("uncaughtException", console.error)
+			process.on("unhandledRejection", console.error)
+		}
 	}
 }
 
