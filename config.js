@@ -3,8 +3,8 @@ import { sessionBus, systemBus} from "dbus-native"
 import minimist from "minimist"
 
 export const defaults= {
-	process(){
-		return globalThis.process
+	process( global= this&& this.globalThis&& this.globalThis()|| globalThis){
+		return global.process
 	},
 	args( argv= this&& this.process().argv|| process.argv){
 		return minimist( argv.splice( 2))
