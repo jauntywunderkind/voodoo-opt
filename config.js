@@ -3,26 +3,29 @@ import { sessionBus, systemBus} from "dbus-native"
 import minimist from "minimist"
 
 export const defaults= {
-	process( global= this&& this.globalThis&& this.globalThis()|| globalThis){
+	process( global= this&& this!== globalThis&& this.globalThis? this.globalThis(): globalThis){
 		return global.process
 	},
-	args( argv= this&& this.process().argv|| process.argv){
+	args( argv= this&& this!== globalThis? this.process().argv: globalThis.process.argv){
 		return minimist( argv.splice( 2))
 	},
-	env( env= this&& this.process().env|| process.env){
+	env( env= this&& this!== globalThis? this.process().env: globalThis.process.env){
 		return env
 	},
-	isSession_( args= this&& this.args()|| args()){
+	isSession_( args= this&& this!== globalThis? this.args(): args()){
 		return args.session|| args.s
 	},
-	isSystem( args= this&& this.args()|| args()){
+	isSystem( args= this&& this!== globalThis? this.args(): args()){
 		return !( args.session|| args.s)
 	},
-	bus( isSession= this&& this.isSession? this.isSession(): isSession()){
+	bus( isSession= this&& this!== globalThis? this.isSession(): isSession()){
 		return isSession? sessionBus(): systemBus()
 	},
-	busName( env= this&& this.env()|| env()){
+	busName( env= this&& this!== globalThis? this.env(): env()){
 		return env.DBUS_NAME
+	},
+	stdout( process= this&& this!== globalThis? this.process().stdout: globalThis.process.stdout){
+		return process
 	}
 }
 
