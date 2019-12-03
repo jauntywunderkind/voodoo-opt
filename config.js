@@ -38,14 +38,7 @@ function boundClone( o){
 }
 
 export function makeConfig( opts= {}){
-	let config= {
-		process: opts.process|| defaults.process,
-		args: opts.args|| defaults.args,
-		env: opts.env|| defaults.env,
-		isSession: opts.isSession|| defaults.isSession,
-		isSystem: opts.isSystem|| defaults.isSystem,
-		bus: opts.bus|| defaults.bus
-	}
+	const config= Object.assign( {}, defaults, opts)
 	return boundClone( config)
 }
 
