@@ -14,9 +14,12 @@ export async function listNames( opts= {}){
 	return Call( iface, "ListNames")
 }
 
-export async function filterNames( filter, opts= {}){
+export async function filterNames( filter= opts&& opts.busName&& opts.busName(), opts= {}){
 	if( typeof( filter)=== "string"){
 		filter= new RegExp( filter)
+	}
+	if( !filter){
+		throw new Error( "No filter specified")
 	}
 	const names= await opts.names|| await listNames( opts)
 	return names.filter( name=> filter.match( name))[ 0]

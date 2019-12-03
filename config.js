@@ -20,6 +20,9 @@ export const defaults= {
 	},
 	bus( isSession= this&& this.isSession? this.isSession(): isSession()){
 		return isSession? sessionBus(): systemBus()
+	},
+	busName( env= this&& this.env()|| env()){
+		return env.DBUS_NAME
 	}
 }
 
