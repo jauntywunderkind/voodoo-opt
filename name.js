@@ -14,7 +14,7 @@ export async function listNames( opts= {}){
 	return Call( iface, "ListNames")
 }
 
-export async function filterNames( opts= {}){
+export async function *filterNames( opts= {}){
 	// find names we are looking for
 	let busNames= opts&& opts.busNames()
 	if( !busNames){
@@ -36,8 +36,15 @@ export async function filterNames( opts= {}){
 		}
 		const results= names.filter( seeking)
 		if( results.length){
-			return results
+			yield results
 		}
+	}
+}
+
+export async function filterName( opts= {}){
+	const value= await filterNames( opts).next()
+	if( !value.done){
+		return value.value
 	}
 }
 

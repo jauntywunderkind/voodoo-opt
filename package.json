@@ -14,6 +14,7 @@
 	"author": "jauntywunderkind",
 	"license": "MIT",
 	"module": "mffwd.js",
+	"type": "module",
 	"esm": true,
 	"dependencies": {
 		"dbus-native": "^0.4.0"
