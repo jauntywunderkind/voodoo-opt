@@ -65,8 +65,11 @@ export function makeConfig( opts= {}, defaults= defaults_){
 	return boundClone( config)
 }
 
-export const
-	singleton= makeConfig(),
+export let process, args, env, isSession, isSystem, defaultBus, bus, busNames, stdout
+export let singleton= makeConfig
+export default singleton
+export function setSingleton( value){
+	singleton= value
 	process= singleton.process,
 	args= singleton.args,
 	env= singleton.env,
@@ -76,4 +79,5 @@ export const
 	bus= singleton.bus,
 	busNames= singleton.busNames,
 	stdout= singleton.stdout
-export default singleton
+}
+setSingleton( singleton)

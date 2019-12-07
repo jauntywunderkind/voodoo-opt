@@ -1,5 +1,5 @@
 "use module"
-import { makeConfig} from "./config.js"
+import config from "./config.js"
 import Interface from "./interface.js"
 import Call from "./call.js"
 
@@ -14,9 +14,12 @@ export async function listNames( opts= {}){
 	return Call( iface, "ListNames")
 }
 
-export async function *filterNames( opts= {}){
+export async function *findNames( opts= {}){
 	// find names we are looking for
-	let busNames= opts&& opts.busNames()
+	let busNames= opts&& opts.busNames&& opts.busNames()
+	if( !busNames){
+		busNames= config.busNames()
+	}
 	if( !busNames){
 		throw new Error( "No bus-names specified to search for")
 	}
@@ -41,7 +44,7 @@ export async function *filterNames( opts= {}){
 	}
 }
 
-export async function filterName( opts= {}){
+export async function findName( opts= {}){
 	const value= await filterNames( opts).next()
 	if( !value.done){
 		return value.value
