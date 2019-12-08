@@ -1,6 +1,7 @@
 "use module"
-import { sessionBus, systemBus} from "dbus-native"
+import dbus from "dbus-native"
 import minimist from "minimist"
+const { sessionBus, systemBus}= dbus
 
 let warn= false
 
@@ -66,7 +67,7 @@ export function makeConfig( opts= {}, defaults= defaults_){
 }
 
 export let process, args, env, isSession, isSystem, defaultBus, bus, busNames, stdout
-export let singleton= makeConfig
+export let singleton= makeConfig()
 export default singleton
 export function setSingleton( value){
 	singleton= value

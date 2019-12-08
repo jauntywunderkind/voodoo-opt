@@ -51,8 +51,8 @@ export async function findName( opts= {}){
 	}
 }
 
-export async function main( opts){
-	const config= makeConfig( opts)
+const config_= config
+export async function main( config= config_){
 	config.warn()
 	const
 		stdout= config.stdout(),
@@ -66,6 +66,6 @@ export async function main( opts){
 	return names
 }
 
-if( typeof require!== "undefined"&& require.main=== module){
+if( typeof process!== "undefined"&& `file://${process.argv[ 1]}`=== import.meta.url){
 	main()
 }
