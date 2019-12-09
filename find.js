@@ -1,8 +1,11 @@
 "use module"
-import config from "./config.js"
+import Call from "./call.js"
+import { get, gets} from "./config.js"
 import introspect from "./introspect.js"
+import Interface from "./interface.js"
 
-export async function findInterface( opts= {}){
+export async function findInterface( ...opts){
+	
 }
 
 export async function *findNames( opts= {}){
