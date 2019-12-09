@@ -1,23 +1,20 @@
 "use module"
-import { bus, pathName}
-import { listNames} from "./names.js"
+import { bus, get} from "./config.js"
+import Interface from "./interface.js"
+import Call from "./call.js"
 
-export async function introspect( opts= {}){
-	if( !opts){
-		if( !path){
-			opts= name
-			name= opts.name
-		}else{
-			opts= path
-		}
-		path= opts.path
-	}
-	const
-	  bus= opts.bus&& opts.bus()|| config.bus()
+export async function introspect( opts){
+	let
+	  bus= get( "bus", opts),
+
+	  bus= 
+	  bus= opts.bus&& opts.bus()|| bus(),
+	  busName= opts.busName&& opts.busName()|| opts.busName,
+	  objectPath= opts.path&& opts.path()
 	  iface= Interface(
 		opts,
-		name,
-		path,
+		opts.busName,
+		opts.,
 		"org.freedesktop.DBus.Introspectable.Introspect")
 	return Call( iface, "Introspect")
 }

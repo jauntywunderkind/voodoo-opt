@@ -102,3 +102,22 @@ async function lateLoad( name, module, fn){
 	  fn= wrapper[ name]
 	return fn
 }
+
+async function get( name, opts, config= singleton){
+	if( !opts){
+		return get( name, config, null)
+	}
+	let val= opts[ name]
+	if( val instanceof Function){
+		val= val()
+	}
+	if( val&& val.then){
+		val= await val
+	}
+	if( val!== undefined){
+		return val
+	}
+	if( config){
+		return get( name, config, null)
+	}
+}

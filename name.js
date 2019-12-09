@@ -1,11 +1,11 @@
 "use module"
-import config from "./config.js"
+import { bus} from "./config.js"
 import Interface from "./interface.js"
 import Call from "./call.js"
 
 export async function listNames( opts= {}){
 	const
-	  bus= opts.bus&& opts.bus()|| config.bus()
+	  bus= opts.bus&& opts.bus()|| bus(),
 	  iface= Interface(
 		opts,
 		"org.freedesktop.DBus",
