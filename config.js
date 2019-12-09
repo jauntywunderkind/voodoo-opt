@@ -5,8 +5,7 @@ const { sessionBus, systemBus}= dbus
 
 let warn= false
 
-
-export const defaults= {
+export const defaults= Object.freeze({
 	process( global= this&& this!== globalThis&& this.globalThis? this.globalThis(): globalThis){
 		return global.process
 	},
@@ -35,8 +34,8 @@ export const defaults= {
 	busNames( env= this&& this!== globalThis? this.env(): env()){ // it'd be nice to make this programmable but without functions.callee no way
 		return [ env.DBUS_NAME]
 	},
-	stdout( process= this&& this!== globalThis? this.process().stdout: globalThis.process.stdout){
-		return process
+	stdout( process= this&& this!== globalThis? this.process(): globalThis.process){
+		return process.stdout
 	},
 	warn( process= this&& this!== globalThis? this.process(): globalThis.process){
 		if( !warn){
@@ -45,48 +44,23 @@ export const defaults= {
 			process.on("unhandledRejection", console.error)
 		}
 	},
-	listNames: lateLoad( "listNames", "./names.js", "listNames")
-}
+	listNames: lateLoad( "listNames", "./names.js")
+})
 
-function boundClone( o){
-	const clone= {}
-	for( let i in o){
-		let fn= o[ i]
-		if( fn instanceof Function){
-			clone[ i]= fn.bind( o)
-		}else{
-			// not actually a fn, just copy
-			clone[ i]= fn
-		}
+let singleton_
+export function singleton(){
+	if( !singleton_){
+		singleton_= { ...defaults}
 	}
-	return clone
+	return singleton_
 }
-
-const defaults_= defaults
-export function makeConfig( opts= {}, defaults= defaults_){
-	const config= Object.assign( {}, defaults, opts)
-	return boundClone( config)
-}
-
-export let process, args, env, isSession, isSystem, defaultBus, bus, busNames, stdout
-export let singleton= makeConfig()
 export default singleton
-export function setSingleton( value){
-	singleton= value
-	process= singleton.process,
-	args= singleton.args,
-	env= singleton.env,
-	isSession= singleton.isSession,
-	isSystem= singleton.isSystem,
-	defaultBus= singleton.defaultBus,
-	bus= singleton.bus,
-	busNames= singleton.busNames,
-	stdout= singleton.stdout
+export function setSingleton( singleton){
+	singleton_= singleton
 }
-setSingleton( singleton)
 
-async function lateLoad( name, module, fn){
-	const wrapper= {[ name]: function(){
+function lateLoad( name, module){
+	const wrapper= {[ name]: async function(){
 		let item= fn.item
 		if( !item){
 			if( !fn.loading){
@@ -103,21 +77,58 @@ async function lateLoad( name, module, fn){
 	return fn
 }
 
-async function get( name, opts, config= singleton){
-	if( !opts){
-		return get( name, config, null)
+export async function get( name, ...opts){
+	let value
+	async function doTry( opt){
+		if( value!== undefined){
+			return
+		}
+		if( opt instanceof Function){
+			opt= opt.call( this)
+		}
+		if( opt=== undefined){
+			return
+		}
+		value= opt[ name]
+		if( value=== undefined){
+			return
+		}
+		if( value instanceof Function){
+			value= value.call( this)
+		}
+		if( value&& value.then){
+			value= await value
+		}
 	}
-	let val= opts[ name]
-	if( val instanceof Function){
-		val= val()
+
+	for( let i= 0; value=== undefined&& i< opts.length; ++i){
+		let opt= opts[ i]
+		await doTry( opt)
 	}
-	if( val&& val.then){
-		val= await val
+	await doTry( defaults)
+	return value
+}
+
+export async function gets( into, ...opts){
+	const keys= Object.keys( into)
+	// bring in defaults
+	for( let i in defaults){
+		if( into[ i]){
+			continue
+		}
+		into[ i]= defaults[ i]
 	}
-	if( val!== undefined){
-		return val
+
+	// begin getting every ask
+	for( let key of keys){
+		if( into[ key]){
+			continue
+		}
+		into[ key]= get.call( into, key, ...opts)
 	}
-	if( config){
-		return get( name, config, null)
+	// resolve every ask
+	for( let key of keys){
+		into[ key]= await into[ key]
 	}
+	return into
 }

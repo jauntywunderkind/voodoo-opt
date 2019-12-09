@@ -1,6 +1,13 @@
 "use module"
-export function Call( iface, method, ...args){
-	let i= new Promise( function( resolve, reject){
+import { gets} from "./config.js"
+
+export async function Call( ...opts){
+	const ctx= await gets({ 
+		iface: null,
+		method: null,
+		callArgs: null
+	}, ...opts, { callArgs: []})
+	let i= new Promise( async function( resolve, reject){
 		function accept( err, names){
 			if( err){
 				reject( err)
@@ -8,9 +15,7 @@ export function Call( iface, method, ...args){
 				resolve( names)
 			}
 		}
-		Promise.resolve( iface).then( function( iface){
-			iface[ method]( ...args, accept)
-		})
+		return ctx.iface[ ctx.method]( ...ctx.callArgs, accept)
 	})
 	return i
 }

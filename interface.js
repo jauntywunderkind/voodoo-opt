@@ -1,24 +1,13 @@
 "use module"
-import { bus as Bus} from "./config.js"
+import { gets} from "./config.js"
 
-export function Interface( ...opts){
-	let ctx= await gets({
+export async function Interface( ...opts){
+	const ctx= await gets({
 		bus: null,
 		busName: null,
 		objectPath: null,
-		"iface": null
-	}, ...opts)
-
-
-	  ct
-	  bus= get( "bus", ...opts),
-	  busName= get( "busName", ...opts),
-	  objectPath= get( "
-busOrOpt= Bus(), name, path, iface){
-	const bus= get( 
-	if( busOrOpt.bus){
-		busOrOpt= busOrOpt.bus()
-	}
+		interfaceName: null
+	  }, ...opts)
 	let o= new Promise( function( resolve, reject){
 		function accept( err, dbus){
 			if( err){
@@ -27,9 +16,9 @@ busOrOpt= Bus(), name, path, iface){
 				resolve( dbus)
 			}
 		}
-		busOrOpt
-		  .getService( name)
-		  .getInterface( path, iface, accept)
+		ctx.bus()
+		  .getService( ctx.busName)
+		  .getInterface( ctx.objectPath, ctx.interfaceName, accept)
 	})
 	return o
 }
