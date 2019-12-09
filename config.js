@@ -5,6 +5,7 @@ const { sessionBus, systemBus}= dbus
 
 let warn= false
 
+
 export const defaults= {
 	process( global= this&& this!== globalThis&& this.globalThis? this.globalThis(): globalThis){
 		return global.process
@@ -43,7 +44,8 @@ export const defaults= {
 			process.on("uncaughtException", console.error)
 			process.on("unhandledRejection", console.error)
 		}
-	}
+	},
+	listNames: lateLoad( "listNames", "./names.js", "listNames")
 }
 
 function boundClone( o){
@@ -82,3 +84,21 @@ export function setSingleton( value){
 	stdout= singleton.stdout
 }
 setSingleton( singleton)
+
+async function lateLoad( name, module, fn){
+	const wrapper= {[ name]: function(){
+		let item= fn.item
+		if( !item){
+			if( !fn.loading){
+				fn.loading= import( name).then( function( mod){
+					fn.loading= null
+					return fn.item= (mod[ name]|| mod.default[ name])
+				})
+			}
+			item= await fn.loading
+		}
+		return item
+	  }},
+	  fn= wrapper[ name]
+	return fn
+}
