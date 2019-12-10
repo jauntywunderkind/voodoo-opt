@@ -44,9 +44,14 @@ export const defaults= Object.freeze({
 			process.on("unhandledRejection", console.error)
 		}
 	},
+	ifs: "\n",
 	listNames: lateLoad( "listNames", "./names.js"),
 	dbus: function(){
 		
+	},
+	TRIPWIRE: function(){
+		console.error("Tripwire; should not invoke config items until needed")
+		process.exit( 1)
 	}
 })
 
