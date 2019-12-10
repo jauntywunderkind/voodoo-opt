@@ -1,6 +1,6 @@
 "use module"
 import Call from "./call.js"
-import { bus, get} from "./config.js"
+import { bus} from "./config.js"
 import Interface from "./interface.js"
 
 export async function introspect( ...opts){

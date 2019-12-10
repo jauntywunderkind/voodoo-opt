@@ -2,8 +2,8 @@
 import Pipe from "async-iter-pipe"
 
 import Call from "./call.js"
-import { get, gets} from "./config.js"
 import Interface from "./interface.js"
+import { get, gets} from "./opts.js"
 
 export async function nameStreams( ...opts){
 	const

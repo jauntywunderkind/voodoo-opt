@@ -1,5 +1,5 @@
 "use module"
-import { gets} from "./config.js"
+import { gets} from "./opts.js"
 
 export async function Interface( ...opts){
 	const ctx= await gets({

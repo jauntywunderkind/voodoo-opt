@@ -1,7 +1,7 @@
 "use module"
 import Pipe from "async-iter-pipe"
 
-import { gets} from "./config.js"
+import { gets} from "./opts.js"
 
 export function Signal( ...opts){
 	const ctx= await gets({

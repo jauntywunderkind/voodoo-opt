@@ -2,7 +2,7 @@
 /** @module dbus
 * a module for the org.freedesktop.DBus
 */
-import { has} from "./config.js"
+import { has} from "./opts.js"
 import { makeSignalName} from "./signal.js"
 
 export const iface= {
