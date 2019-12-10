@@ -17,6 +17,7 @@
 	"type": "module",
 	"esm": true,
 	"dependencies": {
+		"async-iter-pipe": "^1.0.0",
 		"dbus-native": "^0.4.0"
 	},
 	"devDependencies": {

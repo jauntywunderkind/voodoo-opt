@@ -5,8 +5,7 @@ import Call from "./call.js"
 import { get, gets} from "./config.js"
 import Interface from "./interface.js"
 
-
-export async nameStreams( ...opts){
+export async function nameStreams( ...opts){
 	const
 	  add= new Pipe(),
 	  remove= new Pipe(),
