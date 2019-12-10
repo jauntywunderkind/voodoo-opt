@@ -35,6 +35,28 @@ export async function listNames( ...opts){
 }
 
 export async function* nameAcquired( ...opts){
+	let more
+	const ctx= await gets({
+		bus: null,
+		...iface_,
+		service: null,
+		signalName: null
+	})
+	
+	if( !ctx.service){
+		more= { service: ctx
+			.bus()
+			.getService( ctx.busName)
+		}
+	}
+
+	if( !ctx.iface){
+		ctx.iface= await Interface( ...more, ...opts)
+		more= {
+		}
+	}
+
+	return Signal( ...more, ...opts, ctx)
 }
 
 export async function* nameLost( ...opts){
