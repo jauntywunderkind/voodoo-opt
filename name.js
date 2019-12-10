@@ -1,7 +1,22 @@
 "use module"
+import Pipe from "async-iter-pipe"
+
 import Call from "./call.js"
 import { get, gets} from "./config.js"
 import Interface from "./interface.js"
+
+
+export async nameStreams( ...opts){
+	const
+	  add= new Pipe(),
+	  remove= new Pipe(),
+	  replaced= new Pipe()
+	return {
+		add,
+		remove,
+		replaced
+	}
+}
 
 export async function listNames( ...opts){
 	const iface= await Interface({

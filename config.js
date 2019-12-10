@@ -109,6 +109,15 @@ export async function get( name, ...opts){
 	return value
 }
 
+export function has( name, ...opts){
+	for( let i of opts){
+		if( opts[ i]!== undefined){
+			return true
+		}
+	}
+	return false
+}
+
 export async function gets( into, ...opts){
 	const keys= Object.keys( into)
 	// bring in defaults
