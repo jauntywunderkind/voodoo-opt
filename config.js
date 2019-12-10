@@ -142,9 +142,9 @@ export async function gets( into, ...opts){
 	return into
 }
 
-const seenOpts= new Set()
+const seenOpts= new Map()
 export function idempotize( ...opts){
-	SEEN: for( let seen of seenOpts.values()){
+	SEEN: for( let seen of seenOpts.keys()){
 		if( seen.length!== opts.length){
 			continue SEEN
 		}
@@ -153,16 +153,19 @@ export function idempotize( ...opts){
 				continue SEEN
 			}
 		}
-		return seen
+		// found these opts, return their combined
+		return seenOpts.get( seen)
 	}
-	seenOpts.add( opts)
-	return opts
-}
 
-export function map( ...opts){
-	const idemp= idempotize( ...opts)
-	if( idemp){
-		return idemp
+	// no match for these opts, so cache their projected outcome & return
+	let combined= {}
+	for( let opt of opts){
+		for( let i of opt){
+			if( combined[ i]=== undefined){
+				combined[ i]= opt[ i]
+			}
+		}
 	}
-	const 
+	seenOpts.add( opts, combined)
+	return combined
 }
