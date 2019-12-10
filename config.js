@@ -141,3 +141,28 @@ export async function gets( into, ...opts){
 	}
 	return into
 }
+
+const seenOpts= new Set()
+export function idempotize( ...opts){
+	SEEN: for( let seen of seenOpts.values()){
+		if( seen.length!== opts.length){
+			continue SEEN
+		}
+		for( let i in seen){
+			if( seen[ i]!== opts[ i]){
+				continue SEEN
+			}
+		}
+		return seen
+	}
+	seenOpts.add( opts)
+	return opts
+}
+
+export function map( ...opts){
+	const idemp= idempotize( ...opts)
+	if( idemp){
+		return idemp
+	}
+	const 
+}
