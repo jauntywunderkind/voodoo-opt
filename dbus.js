@@ -3,6 +3,7 @@
 * a module for the org.freedesktop.DBus
 */
 import { has} from "./config.js"
+import { makeSignalName} from "./signal.js"
 
 export const iface= {
 	busName: "org.freedesktop.DBus",
@@ -16,6 +17,7 @@ export function DBus( ...opts){
 	const iface= await Interface( iface_, ...opts)
 	return iface
 }
+export const dbus= DBus
 
 export async function listNames( ...opts){
 	let more
@@ -35,32 +37,23 @@ export async function listNames( ...opts){
 }
 
 export async function* nameAcquired( ...opts){
-	let more
-	const ctx= await gets({
-		bus: null,
-		...iface_,
-		service: null,
-		signalName: null
-	})
-	
-	if( !ctx.service){
-		more= { service: ctx
-			.bus()
-			.getService( ctx.busName)
-		}
-	}
-
-	if( !ctx.iface){
-		ctx.iface= await Interface( ...more, ...opts)
-		more= {
-		}
-	}
-
-	return Signal( ...more, ...opts, ctx)
+	return makeSignalName( "nameAcquired", ...opts, iface_)
 }
 
 export async function* nameLost( ...opts){
+	return makeSignalName( "nameLost", ...opts, iface_)
 }
 
 export async function* nameOwnerChanged( ...opts){
+	return makeSignalName( "nameChanged", ...opts, iface_)
+}
+
+export function main( ...opts){
+	const
+	  primer= gets({
+		dbus: null
+	  }, ...opts},
+	  ctx= gets({
+		
+	  }, ...opts)
 }

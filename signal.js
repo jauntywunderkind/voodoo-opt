@@ -7,18 +7,19 @@ export function Signal( ...opts){
 	const ctx= await gets({
 		bus: null,
 		busName: null,
+		service: null,
 		objectPath: null,
-		interfaceName: null
+		interfaceName: null,
 		iface: null,
 		signalName: null
 	  }, ...opts)
 
-	let more= []
+	let more
 	if( !ctx.service){
-		more.push({ service: ctx
-				.bus()
-				.getService( ctx.busName)
-		})
+		more= { service: ctx
+			.bus()
+			.getService( ctx.busName)
+		}
 	}
 	if( !ctx.iface){
 		ctx.iface= await Interface( ...more, ...opts)
@@ -32,7 +33,13 @@ export function Signal( ...opts){
 		}
 		pipe.push( ...val)
 	}
+	// TODO: closing?
+	// maybe have a cleanup controller on ctx
 	ctx.iface.on( ctx.signalName, accept)
 	return pipe
 }
 export default Interface
+
+export function makeSignalName( signalName, ...opts){
+	return Signal( ...opts, { signalName})
+}
