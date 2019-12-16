@@ -45,12 +45,11 @@ export async function findName( opts= {}){
 	}
 }
 
-const config_= config
-export async function main( config= config_){
-	config.warn()
+export async function main( ...opts){
+	await get("warn", ...opts) // runs warn
 	const
-		stdout= config.stdout(),
-		names= await listNames( config)
+	  stdout= await get( "stdout", ...opts),
+	  names= await listNames( config, ...opts)
 	if( stdout){
 		for( let name of names){
 			stdout.write( name)
