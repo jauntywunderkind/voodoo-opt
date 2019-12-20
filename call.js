@@ -8,7 +8,6 @@ export async function Call( ...opts){
 		method: undefined,
 		callArgs: undefined 
 	  }, ...opts, { callArgs: []})
-	console.log("CALL", ctx)
 	let i= new Promise( async function( resolve, reject){
 		function accept( err, names){
 			if( err){
