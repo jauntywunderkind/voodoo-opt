@@ -5,50 +5,81 @@ const { sessionBus, systemBus}= dbus
 
 let warn= false
 
+export const warned= Symbol.for( "dbus-starter:config:warned")
+
+const noRun= {
+	run: false
+}
+
+function conf( key, self, opts){
+	let value
+	if( self&& self!== globalThis){
+		value= self[ key]
+	}
+	let hadValue= !!value
+	if( value=== undefined){
+		value= defaults[ key]
+	}
+	RUN: if( value&& value.call){
+		if( opts&& opts.run=== false){
+			break RUN
+		}
+		value= value.call( self)
+	}
+	return value
+}
+
 export const defaults= Object.freeze({
-	process( global= this&& this!== globalThis&& this.globalThis? this.globalThis(): globalThis){
-		return global.process
+	globalThis(){
+		return globalThis
 	},
-	args( argv= this&& this!== globalThis? this.process().argv: globalThis.process.argv){
+	process( globalThis= conf( "globalThis", this)){
+		return globalThis.process
+	},
+	argv( process= conf( "process", this)){
+		return process.argv
+	},
+	args( argv= conf( "argv", this)){
 		return minimist( argv.slice( 2))
 	},
-	env( env= this&& this!== globalThis? this.process().env: globalThis.process.env){
-		return env
+	env( process= conf( "process", this)){
+		return process.env
 	},
-	isSession( args= this&& this!== globalThis? this.args(): args(), defaultBus= this&& this.defaultBus|| defaults.defaultBus){
+	isSession( args= conf( "args", this), defaultBus= conf( "defaultBus", this)){
 		if( args.system){
 			return false
 		}
 		return args.session|| defaultBus=== "session"
 	},
-	isSystem( args= this&& this!== globalThis? this.args(): args(), defaultBus= this&& this.defaultBus|| defaults.defaultBus){
+	isSystem( args= conf( "args", this), defaultBus= conf( "defaultBus", this)){
 		if( args.system){
 			return true
 		}
 		return !args.session|| defaultBus=== "system"
 	},
 	defaultBus: "session",
-	bus( isSession= this&& this!== globalThis? this.isSession(): isSession()){
+	bus( isSession= conf( "isSession", this)){
 		return isSession? sessionBus(): systemBus()
 	},
-	busNames( env= this&& this!== globalThis? this.env(): env()){ // it'd be nice to make this programmable but without functions.callee no way
-		return [ env.DBUS_NAME]
+	busNames( args= conf( "args", this), env= conf( "env", this)){
+		return args.dbusNames|| arg.dbusName|| env.DBUS_NAMES|| env.DBUS_NAME
 	},
-	stdout( process= this&& this!== globalThis? this.process(): globalThis.process){
+	stdout( process= conf( "process", this)){
 		return process.stdout
 	},
-	warn( process= this&& this!== globalThis? this.process(): globalThis.process){
-		if( !warn){
-			warn= true
-			process.on("uncaughtException", console.error)
-			process.on("unhandledRejection", console.error)
+	warnedSymbol: Symbol.for("dbus-starter:config:warned"),
+	warn( process= conf( "process", this), warnedSymbol= conf( "warnedSymbol", this)){
+		if( process[ warnedSymbol]){
+			return
 		}
+		Object.defineProperty( process, warned, {
+			value: true
+		})
+		process.on("uncaughtException", console.error)
+		process.on("unhandledRejection", console.error)
 	},
 	ifs: "\n",
 	listNames: lateLoad( "listNames", "./names.js"),
-	dbus: function(){
-		
-	},
 	TRIPWIRE: function(){
 		console.error("Tripwire; should not invoke config items until needed")
 		process.exit( 1)

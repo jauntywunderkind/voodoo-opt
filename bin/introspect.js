@@ -6,27 +6,27 @@ import { arg} from "../arg.js"
 
 export async function main( ...opts){
 	const
+		busName_= arg("busName", "bus-name", "b", 0, "org.freedesktop.DBus"),
 		objectPath_= arg( "objectPath", "object-path", "o", 0, "/org/freedesktop/DBus"),
 		iface_= arg( "interfaceName", "interface", "i", 1, "org.freedesktop.DBus"),
 		into= {
 			args: undefined,
 			stdout: undefined,
 			warn: undefined,
+			...busName_,
 			...objectPath_,
 			...iface_ },
 		ctx= await gets( into, ...opts)
-	console.log("BIN-IF", ctx)
 	const
 		stdout= ctx.stdout,
 		intro= await Introspect( ...opts, ctx)
 	if( stdout){
-		if( stdout.call){
-			stdout= stdout.call( ctx)
+		if( stdout.write){
+			stdout.write( intro)
 		}
-		console.log("BIN-STDOUT", {intro})
+		stdout.end()
 	}
 	return intro
-
 }
 export default main
 

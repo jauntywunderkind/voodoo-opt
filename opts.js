@@ -3,7 +3,7 @@ import { defaults} from "./config.js"
 
 export async function get( name, ...opts){
 	let value
-	async function doTry( opt){
+	const doTry= async opt=> {
 		if( value!== undefined){
 			return
 		}
@@ -27,7 +27,9 @@ export async function get( name, ...opts){
 
 	for( let i= 0; value=== undefined&& i< opts.length; ++i){
 		let opt= opts[ i]
-		await doTry( opt)
+		if( await doTry( opt)){
+			return value
+		}
 	}
 	await doTry( defaults)
 	return value
@@ -44,32 +46,39 @@ export function has( name, ...opts){
 }
 
 export async function gets( into, ...opts){
-	console.log("OPTS-gets", into, new Error())
 	// this code does not insure dependencies have been get()'ed :(
 	// partial work-around by asking in into in the needed order. still inter-order issues.
 
 	// load from lowest prio to highest
 	// lowest prio: defaults
 	const keys= Object.keys( into)
-	for( let i in defaults){
-		const intoI= into[ i]
-		if( intoI!== undefined){
+	for( let key in defaults){
+		const cur= into[ key]
+		if( cur!== undefined){
 			continue
 		}
-		into[ i]= defaults[ i]
+		//into[ key]= get.call( into, key)
+		into[ key]= defaults[ key]
+	}
+
+	const argsKey= keys.indexOf( "args")
+	if( argsKey=== -1){
+		keys.unshift( "args")
+	}else if( argsKey!== 0){
+		keys.splice( 0, argsKey, "args")
+	}
+
+	if( into.args){
 	}
 
 	// medium prio: into
 	// higher priority: ...opts
 	for( let key of keys){
 		const cur= into[ key]
-		console.log("GETS-XZ", key, cur)
 		if( cur!== undefined&& !cur.call){
-			console.log("skip", cur)
 			continue
 		}
 		into[ key]= await get.call( into, key, ...opts, into)
-		console.log("CALL", key, into[key])
 	}
 
 	//// resolve every ask
