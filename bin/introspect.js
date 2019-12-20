@@ -7,22 +7,23 @@ import { arg} from "../arg.js"
 export async function main( ...opts){
 	const
 		objectPath_= arg( "objectPath", "object-path", "o", 0, "/org/freedesktop/DBus"),
-		iface_= arg( "iface", "interface", "i", 1, "org.freedesktop.DBus"),
+		iface_= arg( "interfaceName", "interface", "i", 1, "org.freedesktop.DBus"),
 		into= {
-			stdout: null,
-			warn: null,
+			args: undefined,
+			stdout: undefined,
+			warn: undefined,
 			...objectPath_,
 			...iface_ },
 		ctx= await gets( into, ...opts)
-	ctx.warn()
+	console.log("BIN-IF", ctx)
 	const
-		stdout= ctx.stdout(),
-		intro= Introspect( ...opts, ctx)
+		stdout= ctx.stdout,
+		intro= await Introspect( ...opts, ctx)
 	if( stdout){
 		if( stdout.call){
 			stdout= stdout.call( ctx)
 		}
-		console.log(intro)
+		console.log("BIN-STDOUT", {intro})
 	}
 	return intro
 

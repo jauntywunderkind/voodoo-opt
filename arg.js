@@ -15,7 +15,7 @@ export function arg( name, flag= name, shortFlag, ord, default_){
 		...( shortFlag&& {[ nameShort]: shortFlag}),
 		...( hasOrd&& {[ nameOrd]: ord}),
 		...( hasDefault&& {[ nameDefault]: default_}),
-		[ name]: function( args= this.args){
+		[ name]: function( args= this&& this.args){
 			if( args instanceof Function){
 				args= args()
 			}

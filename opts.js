@@ -44,28 +44,38 @@ export function has( name, ...opts){
 }
 
 export async function gets( into, ...opts){
+	console.log("OPTS-gets", into, new Error())
+	// this code does not insure dependencies have been get()'ed :(
+	// partial work-around by asking in into in the needed order. still inter-order issues.
+
+	// load from lowest prio to highest
+	// lowest prio: defaults
 	const keys= Object.keys( into)
-	// bring in defaults
 	for( let i in defaults){
 		const intoI= into[ i]
-		if( intoI!== null&& intoI!== undefined){
+		if( intoI!== undefined){
 			continue
 		}
 		into[ i]= defaults[ i]
 	}
 
-	// begin getting every ask
+	// medium prio: into
+	// higher priority: ...opts
 	for( let key of keys){
 		const cur= into[ key]
-		if( cur!== null&& cur!== undefined){
+		console.log("GETS-XZ", key, cur)
+		if( cur!== undefined&& !cur.call){
+			console.log("skip", cur)
 			continue
 		}
-		into[ key]= get.call( into, key, ...opts)
+		into[ key]= await get.call( into, key, ...opts, into)
+		console.log("CALL", key, into[key])
 	}
-	// resolve every ask
-	for( let key of keys){
-		into[ key]= await into[ key]
-	}
+
+	//// resolve every ask
+	//for( let key of keys){
+	//	into[ key]= await into[ key]
+	//}
 	return into
 }
 export default gets
@@ -90,7 +100,7 @@ export function idempotize( ...opts){
 	for( let opt of opts){
 		for( let i of opt){
 			const cur= combined[ i]
-			if( cur!== null&& cur!== undefined){
+			if( /*cur!== null&&*/ cur!== undefined){
 				combined[ i]= opt[ i]
 			}
 		}

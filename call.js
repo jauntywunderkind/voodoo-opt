@@ -3,10 +3,12 @@ import { gets} from "./opts.js"
 
 export async function Call( ...opts){
 	const ctx= await gets({ 
-		iface: null,
-		method: null,
-		callArgs: null
+		args: undefined,
+		iface: undefined,
+		method: undefined,
+		callArgs: undefined 
 	  }, ...opts, { callArgs: []})
+	console.log("CALL", ctx)
 	let i= new Promise( async function( resolve, reject){
 		function accept( err, names){
 			if( err){

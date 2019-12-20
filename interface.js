@@ -3,11 +3,13 @@ import { gets} from "./opts.js"
 
 export async function Interface( ...opts){
 	const ctx= await gets({
-		bus: null,
-		busName: null,
-		objectPath: null,
-		interfaceName: null
+		args: undefined,	
+		bus: undefined,
+		busName: undefined,
+		objectPath: undefined,
+		interfaceName: undefined 
 	  }, ...opts)
+	console.log( "IF", ctx)
 	let o= new Promise( function( resolve, reject){
 		function accept( err, dbus){
 			if( err){
@@ -16,9 +18,14 @@ export async function Interface( ...opts){
 				resolve( dbus)
 			}
 		}
+		const
+			busName= ctx.busName instanceof Function? ctx.busName(): ctx.busName,
+			objectPath= ctx.objectPath instanceof Function? ctx.objectPath(): ctx.objectPath,
+			interfaceName= ctx.interfaceName instanceof Function? ctx.interfaceName(): ctx.interfaceName
+		console.log({ busName, objectPath, interfaceName, "checksum": "updog"})
 		ctx.bus()
-		  .getService( ctx.busName)
-		  .getInterface( ctx.objectPath, ctx.interfaceName, accept)
+		  .getService( busName)
+		  .getInterface( objectPath, interfaceName, accept)
 	})
 	return o
 }
