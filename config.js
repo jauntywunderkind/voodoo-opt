@@ -10,7 +10,7 @@ export const defaults= Object.freeze({
 		return global.process
 	},
 	args( argv= this&& this!== globalThis? this.process().argv: globalThis.process.argv){
-		return minimist( argv.splice( 2))
+		return minimist( argv.slice( 2))
 	},
 	env( env= this&& this!== globalThis? this.process().env: globalThis.process.env){
 		return env
