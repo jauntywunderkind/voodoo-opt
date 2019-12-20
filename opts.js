@@ -35,7 +35,8 @@ export async function get( name, ...opts){
 
 export function has( name, ...opts){
 	for( let i of opts){
-		if( opts[ i]!== undefined){
+		const cur= opts[ i]
+		if( cur!== null&& cur!== undefined){
 			return true
 		}
 	}
@@ -47,7 +48,7 @@ export async function gets( into, ...opts){
 	// bring in defaults
 	for( let i in defaults){
 		const intoI= into[ i]
-		if(!( intoI=== null|| intoI=== undefined)){
+		if( intoI!== null&& intoI!== undefined){
 			continue
 		}
 		into[ i]= defaults[ i]
@@ -55,7 +56,8 @@ export async function gets( into, ...opts){
 
 	// begin getting every ask
 	for( let key of keys){
-		if( into[ key]){
+		const cur= into[ key]
+		if( cur!== null&& cur!== undefined){
 			continue
 		}
 		into[ key]= get.call( into, key, ...opts)
@@ -87,7 +89,8 @@ export function idempotize( ...opts){
 	let combined= {}
 	for( let opt of opts){
 		for( let i of opt){
-			if( combined[ i]=== undefined){
+			const cur= combined[ i]
+			if( cur!== null&& cur!== undefined){
 				combined[ i]= opt[ i]
 			}
 		}

@@ -5,36 +5,24 @@ import Introspect from "../introspect.js"
 import { arg} from "../arg.js"
 
 export async function main( ...opts){
-	console.log("pre-arg")
 	const
-		op= arg( "objectPath", "object-path", "o", 0, "/org/freedesktop/DBus"),
-		iface= arg( "interface", "interface", "i", 1, "org.freedesktop.DBus")
-	const gots= await gets({ ...op}, ...opts)
-	const { warn, argv, objectPath}= get({
-		warn: null,
-		argv: null,
-		...op
-		//iface: "interface",
-		//ifaceShort: "i",
-		//ifaceOrd: "2"
-	})
-	if( objectPathOrd){
-		objectPathOrd= Number.parseInt( objectPathOrd)
-	}
-	if( ifaceOrd){
-		ifaceOrd= Number.parseInt( ifaceOrd)
-	}
-	//let objectPath= argv[ objectPath]|| argv[ objectPathShort]|| argv[ objectPathOrd]
-
-	await get("warn", ...opts) // runs warn
-	const ctx= await gets({
-		stdout: null,
-		objectPath: "/org/freedesktop/DBus",
-		interface: "org.freedesktop.DBus"
-	}, ...opts)
-	const intro= Introspect( ...opts, ...ctx)
+		objectPath_= arg( "objectPath", "object-path", "o", 0, "/org/freedesktop/DBus"),
+		iface_= arg( "iface", "interface", "i", 1, "org.freedesktop.DBus"),
+		into= {
+			stdout: null,
+			warn: null,
+			...objectPath_,
+			...iface_ },
+		ctx= await gets( into, ...opts)
+	ctx.warn()
+	const
+		stdout= ctx.stdout(),
+		intro= Introspect( ...opts, ctx)
 	if( stdout){
-		//
+		if( stdout.call){
+			stdout= stdout.call( ctx)
+		}
+		console.log(intro)
 	}
 	return intro
 

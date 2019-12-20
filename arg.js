@@ -4,8 +4,9 @@ export function arg( name, flag= name, shortFlag, ord, default_){
 		nameFlag= `${name}Flag`,
 		nameShort= `${name}Short`,
 		nameOrd= `${name}Ord`,
-		nameDefault= `${name}Default}`,
-		hasOrd= !!ord|| ord=== 0
+		nameDefault= `${name}Default`,
+		hasOrd= ord!== null&& ord!== undefined,
+		hasDefault= default_!== null&& default_!== undefined
 	if( hasOrd){ 
 		ord= Number.parseInt( ord)
 	}
@@ -13,15 +14,20 @@ export function arg( name, flag= name, shortFlag, ord, default_){
 		...( flag&& {[ nameFlag]: flag}),
 		...( shortFlag&& {[ nameShort]: shortFlag}),
 		...( hasOrd&& {[ nameOrd]: ord}),
+		...( hasDefault&& {[ nameDefault]: default_}),
 		[ name]: function( args= this.args){
 			if( args instanceof Function){
 				args= args()
 			}
-			return
+			if( !args){
+				throw new Error("No args available")
+			}
+			return (
 				args[ '_'][ this[ nameOrd]]||
 				args[ this[ nameFlag]]||
 				args[ this[ nameShort]]||
-				args[ this[ nameDefault]]
+				this[ nameDefault]
+			)
 		}
 	}
 }
