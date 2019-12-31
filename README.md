@@ -1,3 +1,3 @@
-# dbus-starter
+# voodoo-opt
 
-> a small library to accelerate dbus-native development
+> a hacky toolkit for working with option parameter objects

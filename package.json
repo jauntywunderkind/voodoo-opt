@@ -1,22 +1,19 @@
 {
-	"name": "dbus-starter",
+	"name": "voodoo-opt",
 	"version": "1.0.0",
-	"description": "a small library to accelerate dbus-native development",
+	"description": "a hacky toolkit for working with option parameter objects",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://archive.voodoowarez.com/mffwd"
+		"url": "https://archive.voodoowarez.com/voodoo-opt"
 	},
 	"keywords": [],
 	"author": "jauntywunderkind",
 	"license": "MIT",
-	"module": "mffwd.js",
+	"module": "voodoo-opt.js",
 	"type": "module",
-	"esm": true,
-	"dependencies": {
-		"dbus-native": "^0.4.0"
-	}
+	"esm": true
 }
