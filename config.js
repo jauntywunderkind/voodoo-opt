@@ -1,11 +1,12 @@
 "use module"
 import minimist from "minimist"
+import xdg from "xdg-basedir"
 
 let warn= false
 
 export const warned= Symbol.for( "voodoo-opt:config:warned")
 
-function conf( key, self, opts){
+export function conf( key, self, opts){
 	let value
 	if( self&& self!== globalThis){
 		value= self[ key]
@@ -24,6 +25,7 @@ function conf( key, self, opts){
 }
 
 export const defaults= Object.freeze({
+	appName: "voodoo-opt",
 	globalThis(){
 		return globalThis
 	},
@@ -53,11 +55,20 @@ export const defaults= Object.freeze({
 		process.on("uncaughtException", console.error)
 		process.on("unhandledRejection", console.error)
 	},
+	xdg,
 	TRIPWIRE: function(){
 		console.error("Tripwire; should not invoke config items until needed")
 		process.exit( 1)
 	}
 })
+
+export function makeDefaults( ...more){
+	const made= {...defaults}
+	for( let m of more){
+		Object.assign( made, m)
+	}
+	return made
+}
 
 let singleton_
 export function singleton(){
