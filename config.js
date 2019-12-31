@@ -1,15 +1,9 @@
 "use module"
-import dbus from "dbus-native"
 import minimist from "minimist"
-const { sessionBus, systemBus}= dbus
 
 let warn= false
 
-export const warned= Symbol.for( "dbus-starter:config:warned")
-
-const noRun= {
-	run: false
-}
+export const warned= Symbol.for( "voodoo-opt:config:warned")
 
 function conf( key, self, opts){
 	let value
@@ -45,25 +39,6 @@ export const defaults= Object.freeze({
 	env( process= conf( "process", this)){
 		return process.env
 	},
-	isSession( args= conf( "args", this), defaultBus= conf( "defaultBus", this)){
-		if( args.system){
-			return false
-		}
-		return args.session|| defaultBus=== "session"
-	},
-	isSystem( args= conf( "args", this), defaultBus= conf( "defaultBus", this)){
-		if( args.system){
-			return true
-		}
-		return !args.session|| defaultBus=== "system"
-	},
-	defaultBus: "session",
-	bus( isSession= conf( "isSession", this)){
-		return isSession? sessionBus(): systemBus()
-	},
-	busNames( args= conf( "args", this), env= conf( "env", this)){
-		return args.dbusNames|| arg.dbusName|| env.DBUS_NAMES|| env.DBUS_NAME
-	},
 	stdout( process= conf( "process", this)){
 		return process.stdout
 	},
@@ -78,8 +53,6 @@ export const defaults= Object.freeze({
 		process.on("uncaughtException", console.error)
 		process.on("unhandledRejection", console.error)
 	},
-	ifs: "\n",
-	listNames: lateLoad( "listNames", "./names.js"),
 	TRIPWIRE: function(){
 		console.error("Tripwire; should not invoke config items until needed")
 		process.exit( 1)
