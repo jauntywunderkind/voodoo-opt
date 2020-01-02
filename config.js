@@ -25,7 +25,6 @@ export function conf( key, self, opts){
 }
 
 export const defaults= Object.freeze({
-	appName: "voodoo-opt",
 	globalThis(){
 		return globalThis
 	},
@@ -40,6 +39,9 @@ export const defaults= Object.freeze({
 	},
 	env( process= conf( "process", this)){
 		return process.env
+	},
+	appName( env= conf( "env", this)){
+		return env&& env.APP_NAME|| "voodoo-opt"
 	},
 	stdout( process= conf( "process", this)){
 		return process.stdout
@@ -63,26 +65,16 @@ export const defaults= Object.freeze({
 })
 
 export function makeDefaults( ...more){
-	const made= {...defaults}
-	for( let m of more){
-		Object.assign( made, m)
-	}
-	return made
+	return Object.assign( {}, defaults, ...more)
 }
 
-let singleton_
-export function singleton(){
-	if( !singleton_){
-		singleton_= { ...defaults}
-	}
-	return singleton_
-}
-export default singleton
-export function setSingleton( singleton){
-	singleton_= singleton
+export let singleton
+export default singleton= makeDefaults()
+export function setSingleton( singleton_){
+	singleton= singleton
 }
 
-function lateLoad( name, module){
+export function _lateLoad( name, module){
 	const wrapper= {[ name]: async function(){
 		let item= fn.item
 		if( !item){
