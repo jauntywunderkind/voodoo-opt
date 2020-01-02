@@ -86,18 +86,6 @@ export async function gets( picks, ...opts){
 		into[ key]= defaults[ key]
 	}
 
-	//// do resolve args, and soon
-	//// this one off hack is probably not good enough.
-	//const argsKey= keys.indexOf( "args")
-	//if( argsKey=== -1){
-	//	keys.unshift( "args")
-	//}else if( argsKey!== 0){
-	//	keys.splice( 0, argsKey, "args")
-	//}
-
-	//if( into.args){
-	//}
-
 	// medium prio: picks, into
 	// higher priority: ...opts
 	for( let key of keys){
@@ -116,40 +104,6 @@ export async function gets( picks, ...opts){
 	for( let key of unasked||[]){
 		delete into[ key]
 	}
-
-	//// resolve every ask
-	//for( let key of keys){
-	//	into[ key]= await into[ key]
-	//}
 	return into
 }
 export default gets
-
-const seenOpts= new Map()
-export function idempotize( ...opts){
-	SEEN: for( let seen of seenOpts.keys()){
-		if( seen.length!== opts.length){
-			continue SEEN
-		}
-		for( let i in seen){
-			if( seen[ i]!== opts[ i]){
-				continue SEEN
-			}
-		}
-		// found these opts, return their combined
-		return seenOpts.get( seen)
-	}
-
-	// no match for these opts, so cache their projected outcome & return
-	let combined= {}
-	for( let opt of opts){
-		for( let i of opt){
-			const cur= combined[ i]
-			if( /*cur!== null&&*/ cur!== undefined){
-				combined[ i]= opt[ i]
-			}
-		}
-	}
-	seenOpts.add( opts, combined)
-	return combined
-}
