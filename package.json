@@ -22,5 +22,8 @@
 	"dependencies": {
 		"minimist": "^1.2.0",
 		"xdg-basedir": "^4.0.0"
+	},
+	"peerDependencies": {
+		"async-iter-split": "^1.0.0"
 	}
 }
