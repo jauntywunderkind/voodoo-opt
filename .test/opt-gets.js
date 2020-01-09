@@ -61,3 +61,10 @@ tape( "gets picks can be a function", async function( t){
 	t.deepEqual( ctx,{ z: 42})
 	t.end()
 })
+
+tape( "gets will fulfill an undefined pick if it 'hadThis'", async function( t){
+	t.plan( 1)
+	const ctx= await gets.call({ appName: undefined})
+	t.deepEqual( ctx.appName, "voodoo-opt")
+	t.end()
+})
