@@ -1,5 +1,6 @@
 "use module"
-import minimist from "minimist"
+import constantCase from "constant-case"
+import minimist from "Minimist"
 import xdg from "xdg-basedir"
 
 let warn= false
@@ -42,6 +43,9 @@ export const defaults= Object.freeze({
 	},
 	appName( env= conf( "env", this)){
 		return env&& env.APP_NAME|| "voodoo-opt"
+	},
+	appNameEnv( appName= env( "appName", this)){
+		return constantCase( appName)
 	},
 	stdout( process= conf( "process", this)){
 		return process.stdout
