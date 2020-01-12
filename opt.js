@@ -71,7 +71,7 @@ export async function gets( picks, ...opts){
 		// use "this" context if it is not the global context
 		into= hadThis? this: {},
 		// these are the outcomes we are looking for
-		keys= Object.keys( picks)
+		keys= Object.keys( picks|| (hadThis&& this))
 
 	// load from lowest prio to highest
 	// lowest prio: defaults

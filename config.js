@@ -1,6 +1,6 @@
 "use module"
 import constantCase from "constant-case"
-import minimist from "Minimist"
+import minimist from "minimist"
 import xdg from "xdg-basedir"
 
 let warn= false
