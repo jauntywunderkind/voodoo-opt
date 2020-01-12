@@ -49,6 +49,9 @@ export function get( key, ...opts){
 	doTry( defaults)
 	return value
 }
+export {
+	get as Get
+}
 
 export function has( key, ...opts){
 	for( let i of opts){
@@ -58,6 +61,9 @@ export function has( key, ...opts){
 		}
 	}
 	return false
+}
+export {
+	has as Has
 }
 
 export async function gets( picks, ...opts){
@@ -106,4 +112,7 @@ export async function gets( picks, ...opts){
 	}
 	return into
 }
-export default gets
+export {
+	gets as default,
+	gets as Gets
+}
