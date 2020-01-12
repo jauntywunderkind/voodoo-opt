@@ -1,2 +1,1 @@
-export { has, Has} from "./opt.js"
-export default has
+export { has as Has, has, Has} from "./opt.js"

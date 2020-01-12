@@ -1,2 +1,1 @@
-export { get, Get} from "./opt.js"
-export get as default
+export { get as default, get, Get} from "./opt.js"

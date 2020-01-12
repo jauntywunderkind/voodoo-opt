@@ -1,2 +1,1 @@
-export { symbol, Symbol} from "./opt.js"
-export default symbol
+export { symbol as default, symbol, Symbol} from "./opt.js"
