@@ -1,6 +1,6 @@
 {
 	"name": "voodoo-opt",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "a hacky toolkit for working with option parameter objects",
 	"main": "opt.js",
 	"scripts": {
