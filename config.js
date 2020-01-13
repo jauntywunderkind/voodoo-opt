@@ -50,8 +50,11 @@ export const defaults= Object.freeze({
 	stdout( process= conf( "process", this)){
 		return process.stdout
 	},
-	async lines( readable= conf( "stdout", this)){
-		const AiSplit= await import( "async-iter-split")
+	stdin( process= conf( "process", this)){
+		return process.stdin
+	},
+	async lines( readable= conf( "stdin", this)){
+		const AiSplit= (await import( "async-iter-split")).default
 		return AiSplit( readable)
 	},
 	warnedSymbol: Symbol.for("dbus-starter:config:warned"),
