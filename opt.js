@@ -39,7 +39,7 @@ export function get( key, ...opts){
 		}
 	}
 
-	for( let i= opts.length- 1; value=== undefined&& i>= 0; --i){
+	for( let i= opts.length- 1; i>= 0; --i){
 		let opt= opts[ i]
 		doTry( opt)
 		if( value!== undefined){
