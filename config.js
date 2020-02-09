@@ -57,6 +57,12 @@ export const defaults= Object.freeze({
 		const AiSplit= (await import( "async-iter-split")).default
 		return AiSplit( readable)
 	},
+	expression( args= conf( "args", this)){
+		const expr= args.expression|| args.e
+		if( expr){
+			return eval( `function expression( a, b, c, d, e, f, g, h){ ${expr} }`)
+		}
+	},
 	warnedSymbol: Symbol.for("dbus-starter:config:warned"),
 	warn( process= conf( "process", this), warnedSymbol= conf( "warnedSymbol", this)){
 		if( process[ warnedSymbol]){
