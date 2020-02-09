@@ -80,6 +80,9 @@ export const defaults= Object.freeze({
 		process.exit( 1)
 	}
 })
+export {
+	defaults as Defaults
+}
 
 export function makeDefaults( ...more){
 	return Object.assign( {}, defaults, ...more)
