@@ -1,5 +1,5 @@
 "use module"
-import { defaults} from "./config.js"
+import { singleton} from "./config.js"
 
 export const
 	NoAwait= Symbol.for( "voodoo-opt:no-await"),
@@ -46,7 +46,7 @@ export function get( key, ...opts){
 			return value
 		}
 	}
-	doTry( defaults)
+	doTry( singleton)
 	return value
 }
 export {
@@ -80,8 +80,8 @@ export async function gets( picks, ...opts){
 		keys= Object.keys( picks|| (hadThis&& this))
 
 	// load from lowest prio to highest
-	// lowest prio: defaults
-	for( let key in defaults){
+	// lowest prio: singleton
+	for( let key in singleton){
 		if( into[ key]!== undefined){
 			continue
 		}
@@ -89,7 +89,7 @@ export async function gets( picks, ...opts){
 		// clean up this default latter
 		unasked.add( key)
 		//into[ key]= get.call( into, key)
-		into[ key]= defaults[ key]
+		into[ key]= singleton[ key]
 	}
 
 	// medium prio: picks, into
@@ -97,7 +97,7 @@ export async function gets( picks, ...opts){
 	for( let key of keys){
 		unasked.delete( key)
 
-		// TODO sooo defaults are already in into to satisfy dependencies
+		// TODO sooo singleton are already in into to satisfy dependencies
 		// but picks are supposed to be higher prio
 		let value= get.call( into, key, picks, into, ...opts)
 		if( value&& value.then&& !value[ NoAwait]){

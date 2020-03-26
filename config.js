@@ -91,7 +91,7 @@ export function makeDefaults( ...more){
 export let singleton
 export default singleton= makeDefaults()
 export function setSingleton( singleton_){
-	singleton= singleton
+	singleton= singleton_
 }
 
 export function _lateLoad( name, module){
